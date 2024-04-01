@@ -1,4 +1,183 @@
+package com.kral;
 
+import java.util.Scanner;
+import java.util.function.Consumer;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.io.*;
+import java.util.*;
+
+public class EmployeeView {
+
+	private Scanner scanner = new Scanner(System.in);
+	private int empCount = 4;
+	//private int empId = 4;
+	List <Employee> employees;
+	//private Employee[] employees = new Employee[50];
+	Set<Employee> names = new HashSet<>();
+	File file = new File("EmployeeData.ser");
+	private int count = 0;
+	{
+		Employee employee1 = new Employee(1, "nausha", LocalDate.of(1972,12,30), EmployeeType.CEO, "Naushad1", true);
+		Employee employee2 = new Employee(2, "akhtar", LocalDate.of(1999,07,21), EmployeeType.MANAGER, "akhtar2", true);
+		Employee employee3 = new Employee(3, "ravi", LocalDate.of(1995,07,15), EmployeeType.DEVELOPER,"ravi3", false);
+		Employee employee4 = new Employee(4, "Roy", LocalDate.of(2001,01,01), EmployeeType.CTO,"Roy4",false);
+//		employees[0] = employee1;
+//		employees[1] = employee2;
+//		employees[2] = employee3;
+//		employees[3] = employee4;
+	
+		
+		names.add(employee1);
+		names.add(employee2);
+		names.add(employee3);
+		names.add(employee4);
+		//names.add(employee1);
+		
+		employees = new ArrayList<>(Arrays.asList(employee1, employee2, employee3, employee4));
+		
+		Consumer<Employee> consumer = new Consumer<Employee>() {
+
+			@Override
+			public void accept(Employee t) {
+				System.out.println(t);			
+			}
+		};
+		
+		Consumer<Employee> consumer1 = t-> System.out.println(t);
+		employees.forEach(consumer);
+		employees.forEach(consumer1);
+	}
+
+	public EmployeeView() throws FileNotFoundException, ClassNotFoundException, IOException {
+		System.out.println("Employee Management System");
+		deserialize();
+//		System.out.println("Test");
+		while (true) {
+			System.out.println("Entering Main Options");
+			mainOptions();
+			System.out.println("End of some option");
+		}
+	}
+	
+
+	//@SuppressWarnings("unchecked")
+	private void mainOptions() throws FileNotFoundException, ClassNotFoundException, IOException {
+//		System.out.println("Enter the option from below");
+//		System.out.println("1. User login");
+//		System.out.println("2. New user registration");
+//		int userOption = scanner.nextInt();
+		
+	//	switch(userOption) {
+		
+		//case 1: {
+			System.out.println("Enter User Id");
+			int userId = scanner.nextInt();
+			System.out.println("Enter Password");
+			String passWord = scanner.next();
+			
+			Boolean isAdmin = userAuth(userId, passWord);
+		//}
+		
+//		case 2:{
+//			System.out.println("Enter Username");
+//			String userName = scanner.next();
+//			System.out.println("Enter Password");
+//			String passWord = scanner.next();
+//			
+//			userRegistration(userName, passWord);
+//			
+//			System.out.println("New user Registered");
+//			mainOptions();
+//		}
+	//	}
+//		System.out.println("Enter Username");
+//		String userName = scanner.next();
+//		System.out.println("Enter Password");
+//		String passWord = scanner.next();
+//		
+//		Boolean isAdmin = userAuth(userName, passWord);
+		if(isAdmin) {	
+		System.out.println("Enter the option from below : ");
+		System.out.println("1. Add Employee");
+		System.out.println("2. Display All Employee");
+		System.out.println("3. Display Employee with id :");
+		System.out.println("4. Update Employee");
+		System.out.println("5. Delete Employee");
+		System.out.println("6. Display Employee by Type :");
+		System.out.println("7. Display Employee by date of birth :");
+		System.out.println("8. Exit Application");
+		
+//		if(count != 0) {
+//			try(FileInputStream fir = new FileInputStream("EmployeeData.ser");
+//					ObjectInputStream ois = new ObjectInputStream(fir)){
+//				
+//				Object object = ois.readObject();
+//				employees = (Employee[]) object;
+//				names = (Set<Employee>) object;
+//			}
+//			
+//			} else {
+//			count ++;
+//		}
+		
+		int option = scanner.nextInt();
+		switch (option) {
+		case 1: {
+			addEmployees();
+			System.out.println("add employee completeed");
+			return;
+		}
+		case 2: {
+			displayEmployees();
+			return;
+		}
+		case 4 :{
+			updateEmployee();
+			return;
+		}
+		case 5 : {
+			deleteEmployee();
+			return;
+		}
+		case 6:{
+			displayByType();
+			return;
+		}
+		case 7:{
+			displayEmployeeByAge();
+			return;
+		}
+		case 8: {
+			serialize();
+			System.err.println("End of Application.....");
+			System.err.println("Thanks for using the Application.....");
+			System.exit(0);
+		}
+		default:
+			System.out.println("Please Select Proper Option");
+		}}
+		else {
+			System.out.println("Enter the option from below : ");
+			//System.out.println("1. Add Employee");
+			System.out.println("1. Display All Employee");
+		//	System.out.println("3. Display Employee with id :");
+			System.out.println("2. Update Employee");
+			
+			int empOption = scanner.nextInt();
+			switch(empOption) {
+			case 1 :{
+				displayOneEmployee(userId);
+			}
+			
+			case 2 :{
+				updateOneEmployee(userId);
+			}
+			}
+		}
+	}
+	
 	private void updateOneEmployee(int userId) {
 		for(Employee emp: employees) {
 			if(emp.getId() == userId) {
